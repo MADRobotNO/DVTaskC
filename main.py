@@ -13,6 +13,7 @@ df['Obesity levels(Country)'] = df['Obesity levels(Country)'].str.replace('%', '
 df = df.astype({col: float for col in df.columns[1:]})
 
 app = dash.Dash(__name__)
+server = app.server
 
 geolocator = Nominatim(user_agent="city_geocoder")
 
