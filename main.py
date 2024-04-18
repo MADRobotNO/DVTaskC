@@ -12,8 +12,8 @@ df['Cost of a monthly gym membership(City)'] = df['Cost of a monthly gym members
 df['Obesity levels(Country)'] = df['Obesity levels(Country)'].str.replace('%', '')
 df = df.astype({col: float for col in df.columns[1:]})
 
-app = dash.Dash(__name__)
-server = app.server
+dash_app = dash.Dash(__name__)
+app = dash_app.server
 
 geolocator = Nominatim(user_agent="city_geocoder")
 
@@ -72,7 +72,7 @@ rank_life_fig = px.bar(df, x='Rank', y='Life expectancy(years) (Country)',
                                  hover_name='City',
                                  title="Rank vs Life expectancy (ordered by rank)").update_xaxes(showgrid=False).update_yaxes(title="Life expectancy (years)").update_layout(showlegend=False)
 
-app.layout = html.Div([
+dash_app.layout = html.Div([
     html.H1("Explore Healthy Lifestyle Cities Report 2021 dataset", style={'text-align': 'center', 'margin-bottom': '20px'}),
     html.Div([
         dcc.Graph(id='map-fig', figure=map_fig, style={'width': '98%', 'display': 'inline-block', 'margin-top': '5px'}),
@@ -102,7 +102,7 @@ app.layout = html.Div([
 ])
 
 
-@app.callback(
+@dash_app.callback(
     [Output('sunshine-life-fig', 'figure'),
      Output('pollution-happiness-fig', 'figure'),
      Output('obesity-outdoor-fig', 'figure'),
@@ -186,4 +186,4 @@ def filter_df_by_selected_cities(df, selected_cities):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    dash_app.run_server(debug=True)
