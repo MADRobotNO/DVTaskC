@@ -50,27 +50,33 @@ sunshine_happines_fig = px.scatter(df_sun, x='Sunshine hours(City)', y='Happines
                                    title="Happiness levels vs. Sunshine hours", ).update_xaxes(title='Sunshine hours', autotickangles=[90], showgrid=False).update_yaxes(title="Happiness levels",)
 
 df_pol = df.sort_values('Pollution(Index score) (City)')
-pollution_happiness_fig = px.scatter(df_pol, x='Pollution(Index score) (City)', y='Life expectancy(years) (Country)',
+pollution_happiness_fig = (px.scatter(df_pol, x='Pollution(Index score) (City)', y='Life expectancy(years) (Country)',
                                      color='City',
                                      hover_name='City',
                                      title="Life expectancy vs. Pollution",
                                      trendline="lowess",
                                      trendline_scope="overall",
-                                     color_discrete_map=color_map).update_xaxes(title="Pollution (index score)", showgrid=False).update_yaxes(title="Life expectancy (years)")
+                                     color_discrete_map=color_map)
+                           .update_xaxes(title="Pollution (index score)", showgrid=False)
+                           .update_yaxes(title="Life expectancy (years)"))
 
 df_obe = df.sort_values('Obesity levels(Country)')
-obesity_outdoor_fig = px.bar(df_obe, y='Obesity levels(Country)', x='City',
-
+obesity_outdoor_fig = (px.bar(df_obe, y='Obesity levels(Country)', x='City',
                                  color_discrete_map=color_map,
                                  hover_name='City',
-                                 title="Obesity levels in Cities (ordered by obesity level)").update_xaxes(autotickangles=[90], showgrid=False).update_yaxes(title="Obesity levels").update_layout(showlegend=False)
+                                 title="Obesity levels in Cities (ordered by obesity level from lowest to highest)")
+                       .update_xaxes(autotickangles=[90], showgrid=False)
+                       .update_yaxes(title="Obesity levels")
+                       .update_layout(showlegend=False))
 
-
-rank_life_fig = px.bar(df, x='Rank', y='Life expectancy(years) (Country)',
-
-                                 color_discrete_map=color_map,
-                                 hover_name='City',
-                                 title="Rank vs Life expectancy (ordered by rank)").update_xaxes(showgrid=False).update_yaxes(title="Life expectancy (years)").update_layout(showlegend=False)
+df_rank = df.sort_values(by='Rank', ascending=False)
+rank_life_fig = (px.bar(df_rank, x='City', y='Life expectancy(years) (Country)',
+                                        color_discrete_map=color_map,
+                                        hover_name='City',
+                                        title="Life expectancy in Cities (ordered by rank from lowest to highest)")
+                 .update_xaxes(autotickangles=[90], showgrid=False)
+                 .update_yaxes(title="Life expectancy (years)")
+                 .update_layout(showlegend=False))
 
 dash_app.layout = html.Div([
     html.H1("Explore Healthy Lifestyle Cities Report 2021 dataset", style={'text-align': 'center', 'margin-bottom': '20px'}),
@@ -149,16 +155,19 @@ def update_graphs(selected_map_data):
         obesity_outdoor_fig_updated = (px.bar(filtered_df_obe, y='Obesity levels(Country)', x='City',
                                               color_discrete_map=color_map,
                                               hover_name='City',
-                                              title="Obesity levels in Cities (ordered by obesity level)").update_xaxes(
+                                              title="Obesity levels in Cities (ordered by obesity level from lowest to highest)")
+                                       .update_xaxes(
                                               autotickangles=[90],
                                               showgrid=False)
                                        .update_yaxes(title="Obesity levels").update_layout(showlegend=False))
 
-        rank_life_fig_updated = (px.bar(filtered_df, x='Rank', y='Life expectancy(years) (Country)',
+        filtered_df_rank = filtered_df.sort_values(by='Rank', ascending=False)
+        rank_life_fig_updated = (px.bar(filtered_df_rank, x='City', y='Life expectancy(years) (Country)',
                                         color_discrete_map=color_map,
                                         hover_name='City',
-                                        title="Rank vs Life expectancy (ordered by rank)")
-                                 .update_xaxes(showgrid=False).update_yaxes(title="Life expectancy (years)")
+                                        title="Life expectancy in Cities (ordered by rank from lowest to highest)")
+                                 .update_xaxes(autotickangles=[90], showgrid=False)
+                                 .update_yaxes(title="Life expectancy (years)")
                                  .update_layout(showlegend=False))
 
         return sunshine_life_fig_updated, pollution_happiness_fig_updated, obesity_outdoor_fig_updated, rank_life_fig_updated
